@@ -3,61 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logan Schauer - Operations Strategy Consultant</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Logan Schauer</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background: #fafafa;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 60px 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .profile {
+            text-align: center;
+            margin-bottom: 2.5em;
+        }
+
+        .avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 1em;
+            border: 3px solid #ff6b6b;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+        }
+
+        .profile h1 {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #1B365D;
+            margin-bottom: 0.3em;
+            letter-spacing: -0.02em;
+        }
+
+        .profile p {
+            font-size: 0.95em;
+            color: #777;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85em;
+        }
+
+        .link-btn {
+            display: block;
+            width: 100%;
+            padding: 1em 1.5em;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1em;
+            text-align: center;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            cursor: pointer;
+        }
+
+        .link-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .link-btn:active {
+            transform: translateY(0);
+        }
+
+        .link-btn.primary {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .link-btn.secondary {
+            background: white;
+            color: #1B365D;
+            border: 2px solid #eee;
+        }
+
+        .link-btn.secondary:hover {
+            border-color: #ff6b6b;
+            color: #ff6b6b;
+        }
+
+        .link-btn.dark {
+            background: #1B365D;
+            color: white;
+        }
+
+        .section-label {
+            font-size: 0.75em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #bbb;
+            text-align: center;
+            margin: 1.5em 0 0.5em;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 2.5em;
+            font-size: 0.85em;
+            color: #bbb;
+        }
+    </style>
 </head>
 <body>
-    <nav class="nav">
-        <a href="/about" style="color: #ff6b6b; text-decoration: none; font-weight: 600;">About Me</a>
-        <a href="/tools" style="color: #ff6b6b; text-decoration: none; font-weight: 600;">Tools I Use</a>
-        <a href="/thoughts" style="color: #ff6b6b; text-decoration: none; font-weight: 600;">Thoughts</a>
-   </nav>
+    <div class="container">
 
-    <h1>I'm Logan, your consultant's consultant.</h1>
-    <p class="subtitle">I help aging industries engage young professionals by rebuilding the broken systems that make young people want to quit.</p>
-    
-    <div class="hero-stats">
-        <div class="stat">
-            <span class="number">12</span>
-            <span class="label">Businesses Optimized</span>
+        <div class="profile">
+            <div class="avatar">
+                <img src="headshot.jpg" alt="Logan Schauer">
+            </div>
+            <h1>Logan Schauer</h1>
+            <p>Operations Strategy Consultant<br>Southern California</p>
         </div>
-        <div class="stat">
-            <span class="number">7</span>
-            <span class="label">Redundancies Eliminated</span>
+
+        <div class="links">
+
+            <a href="https://calendar.app.google/hwm8Z1nYG3jvuMy77" class="link-btn primary" target="_blank" rel="noopener">
+                Book a Call
+            </a>
+
+            <a href="mailto:logan@loganschauer.com" class="link-btn secondary">
+                Send Me an Email
+            </a>
+
+            <div class="section-label">Explore</div>
+
+            <a href="/services" class="link-btn secondary">
+                Services
+            </a>
+
+            <a href="/about" class="link-btn secondary">
+                About Me
+            </a>
+
+            <a href="/thoughts" class="link-btn secondary">
+                Thoughts
+            </a>
+
+            <a href="/tools" class="link-btn secondary">
+                Tools I Use
+            </a>
+
+            <div class="section-label">Connect</div>
+
+            <a href="https://linkedin.com/in/loganschauer" class="link-btn dark" target="_blank" rel="noopener">
+                LinkedIn
+            </a>
+
         </div>
-        <div class="stat">
-            <span class="number">240k+</span>
-            <span class="label">Overhead Saved</span>
+
+        <div class="footer">
+            &copy; 2026 Logan Schauer
         </div>
-    </div>
 
-    <div class="section">
-        <h2>I fix what everyone accepts as unfixable.</h2>
-        <p>Experienced teams drowning in manual processes. Customer data scattered across seven systems. Your highest-paid people doing administrative work.</p>
-        <p><strong>This isn't normal. It's just common.</strong></p>
     </div>
-
-    <div class="section">
-        <h2>The 90-Day Transformation</h2>
-        
-        <h3>Weeks 1-2: Discovery</h3>
-        <p>I map your actual workflows, not the ones in your documentation.</p>
-        
-        <h3>Weeks 3-6: Architecture</h3>
-        <p>We rebuild systems that people want to use, not work around.</p>
-        
-        <h3>Weeks 7-12: Implementation</h3>
-        <p>Changes that stick because they make life easier, not harder.</p>
-    </div>
-
-    <div class="cta">
-        <h2>Ready to fix what's broken?</h2>
-        <p><a href="mailto:logan@loganschauer.com">logan@loganschauer.com</a></p>
-        <p>Let's have a 20-minute conversation about your operational pain points.</p>
-    </div>
-
-    <p style="text-align: center; color: #999; margin-top: 4em;">
-        Logan Schauer | Operations Strategy Consultant | Southern California
-    </p>
 </body>
 </html>
