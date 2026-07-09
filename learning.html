@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What Is Logan Learning</title>
+
+<!--
+================================================================================
+  WHAT IS LOGAN LEARNING  —  a learning-in-public hub
+================================================================================
+
+  HOW TO EDIT THIS (the only part you need to touch):
+  Scroll down to the SUBJECTS array inside the <script> tag near the bottom.
+  Each subject looks like this:
+
+      {
+        id: "sociology",              // unique, no spaces
+        title: "Sociology",
+        why: "One honest line about why you're learning this.",
+        lessons: [
+          { text: "First thing in the order", done: true },
+          { text: "Second thing",             done: false },
+          ...
+        ]
+      }
+
+  - To MARK A LESSON DONE: flip its `done: false` to `done: true`, commit,
+    and push. Progress lives in this file, so everyone sees the same thing —
+    visitors can't check anything off, and your commit history becomes the
+    actual running log.
+  - To ADD a subject: copy a whole { ... } block, give it a NEW unique id,
+    and fill in your own title / why / lessons.
+  - To ADD lessons: add { text: "...", done: false } entries. Order of
+    lessons = the order you intend to learn them.
+  - When you edit, also update LAST_UPDATED just below the SUBJECTS array
+    so the footer stamp stays honest.
+================================================================================
+-->
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Space+Mono:wght@400;700&display=swap');
+
+  :root{
+    --paper:      #EFE8D7;   /* warm parchment, deeper than the default cream */
+    --paper-card: #F6F1E6;   /* card surface, a shade lighter than the page */
+    --ink:        #26231D;   /* warm near-black */
+    --ink-soft:   #5C574C;   /* muted body / secondary text */
+    --ink-faint:  #938C7B;   /* captions, done items */
+    --pine:       #37564E;   /* primary accent — deep muted pine */
+    --pine-soft:  #6E8A80;   /* lighter pine for fills */
+    --bronze:     #937339;   /* catalog numbers / metadata */
+    --rule:       #D6CDB8;   /* hairlines & borders */
+    --rule-soft:  #E2DAC7;
+    --shadow:     rgba(38,35,29,0.07);
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  html{ -webkit-text-size-adjust:100%; }
+
+  body{
+    background:var(--paper);
+    /* faint paper grain — very subtle, does not read as pattern */
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(147,115,57,0.035), transparent 60%),
+      radial-gradient(circle at 85% 90%, rgba(55,86,78,0.04), transparent 55%);
+    color:var(--ink);
+    font-family:'Instrument Sans', system-ui, sans-serif;
+    line-height:1.55;
+    min-height:100vh;
+    padding:clamp(1.25rem, 4vw, 3.5rem) clamp(1rem, 4vw, 2rem) 5rem;
+  }
+
+  .wrap{ max-width:720px; margin:0 auto; }
+
+  .sr-only{
+    position:absolute; width:1px; height:1px;
+    padding:0; margin:-1px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;
+  }
+
+  /* ---------- Site nav ---------- */
+  nav.nav{
+    display:flex;
+    flex-wrap:wrap;
+    gap:1.4rem;
+    margin-bottom:2.4rem;
+    font-family:'Space Mono', monospace;
+    font-size:0.74rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+  }
+  nav.nav a{
+    color:var(--bronze);
+    text-decoration:none;
+    border-bottom:1px solid var(--rule);
+    padding-bottom:2px;
+  }
+  nav.nav a:hover{ color:var(--pine); border-bottom-color:var(--pine-soft); }
+
+  /* ---------- Masthead ---------- */
+  header.mast{
+    border-bottom:1.5px solid var(--ink);
+    padding-bottom:1.4rem;
+    margin-bottom:2.2rem;
+  }
+  .eyebrow{
+    font-family:'Space Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.22em;
+    text-transform:uppercase;
+    color:var(--bronze);
+    margin-bottom:0.9rem;
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-optical-sizing:auto;
+    font-weight:600;
+    font-size:clamp(2.3rem, 8vw, 3.9rem);
+    line-height:0.98;
+    letter-spacing:-0.015em;
+    margin-bottom:0.85rem;
+  }
+  h1 em{
+    font-style:italic;
+    font-weight:400;
+    color:var(--pine);
+  }
+  .lede{
+    font-size:1.02rem;
+    color:var(--ink-soft);
+    max-width:46ch;
+  }
+
+  /* ---------- Overall progress strip ---------- */
+  .tally{
+    display:flex;
+    align-items:baseline;
+    gap:0.7rem;
+    margin-top:1.5rem;
+    flex-wrap:wrap;
+  }
+  .tally .count{
+    font-family:'Space Mono', monospace;
+    font-weight:700;
+    font-size:1.05rem;
+    color:var(--ink);
+  }
+  .tally .label{
+    font-family:'Space Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+  }
+  .meter{
+    height:5px;
+    background:var(--rule-soft);
+    border-radius:99px;
+    margin-top:0.85rem;
+    overflow:hidden;
+  }
+  .meter > span{
+    display:block;
+    height:100%;
+    width:0%;
+    background:var(--pine);
+    border-radius:99px;
+    transition:width .5s cubic-bezier(.22,.61,.36,1);
+  }
+
+  /* ---------- Subject cards ---------- */
+  .subjects{ margin-top:2.6rem; display:flex; flex-direction:column; gap:1.1rem; }
+
+  .subject{
+    background:var(--paper-card);
+    border:1px solid var(--rule);
+    border-radius:10px;
+    box-shadow:0 1px 0 var(--shadow);
+    overflow:hidden;
+  }
+  .subject.done{ border-color:var(--pine-soft); }
+
+  .subject-head{
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    gap:1rem;
+    align-items:start;
+    padding:1.25rem 1.35rem;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .subject-head:focus-visible{ outline:2px solid var(--pine); outline-offset:-3px; }
+
+  .catalog{
+    font-family:'Space Mono', monospace;
+    font-size:0.82rem;
+    font-weight:700;
+    color:var(--bronze);
+    padding-top:0.42rem;
+    letter-spacing:0.02em;
+  }
+
+  .subject-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:1.42rem;
+    line-height:1.12;
+    letter-spacing:-0.01em;
+  }
+  .subject-why{
+    font-size:0.9rem;
+    color:var(--ink-soft);
+    margin-top:0.35rem;
+    font-style:italic;
+    font-family:'Fraunces', serif;
+    font-weight:400;
+  }
+  .subject-meta{
+    display:flex;
+    align-items:center;
+    gap:0.9rem;
+    margin-top:0.85rem;
+  }
+  .mini-meter{
+    height:4px; width:120px; max-width:38vw;
+    background:var(--rule-soft);
+    border-radius:99px; overflow:hidden;
+  }
+  .mini-meter > span{
+    display:block; height:100%; width:0%;
+    background:var(--pine-soft);
+    transition:width .45s cubic-bezier(.22,.61,.36,1);
+  }
+  .subject.done .mini-meter > span{ background:var(--pine); }
+  .frac{
+    font-family:'Space Mono', monospace;
+    font-size:0.74rem;
+    color:var(--ink-faint);
+    letter-spacing:0.03em;
+    white-space:nowrap;
+  }
+
+  .chev{
+    align-self:center;
+    color:var(--ink-faint);
+    transition:transform .3s ease;
+    flex-shrink:0;
+  }
+  .subject.open .chev{ transform:rotate(90deg); }
+
+  /* lesson list */
+  .lessons{
+    display:grid;
+    grid-template-rows:0fr;
+    transition:grid-template-rows .34s ease;
+  }
+  .lessons-inner{ overflow:hidden; }
+  .subject.open .lessons{ grid-template-rows:1fr; }
+
+  .lesson-list{
+    list-style:none;
+    border-top:1px solid var(--rule-soft);
+    padding:0.4rem 1.35rem 1.1rem;
+  }
+  .lesson{
+    display:flex;
+    align-items:flex-start;
+    gap:0.85rem;
+    padding:0.62rem 0;
+    border-bottom:1px solid var(--rule-soft);
+  }
+  .lesson:last-child{ border-bottom:none; }
+
+  .box{
+    flex-shrink:0;
+    margin-top:0.12rem;
+    width:19px; height:19px;
+    border:1.5px solid var(--pine-soft);
+    border-radius:5px;
+    background:transparent;
+    display:grid; place-items:center;
+  }
+  .box svg{ opacity:0; }
+  .lesson.checked .box{ background:var(--pine); border-color:var(--pine); }
+  .lesson.checked .box svg{ opacity:1; }
+
+  .lesson-idx{
+    font-family:'Space Mono', monospace;
+    font-size:0.74rem;
+    color:var(--bronze);
+    padding-top:0.15rem;
+    min-width:1.6em;
+  }
+  .lesson-text{
+    font-size:0.96rem;
+    color:var(--ink);
+    flex:1;
+  }
+  .lesson.checked .lesson-text{
+    color:var(--ink-faint);
+    text-decoration:line-through;
+    text-decoration-color:var(--pine-soft);
+  }
+  .lesson.checked .lesson-idx{ color:var(--ink-faint); }
+
+  /* ---------- footer ---------- */
+  footer{
+    margin-top:3.5rem;
+    padding-top:1.3rem;
+    border-top:1px solid var(--rule);
+    font-family:'Space Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.06em;
+    color:var(--ink-faint);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:0.6rem;
+  }
+  footer a{ color:var(--bronze); text-decoration:none; border-bottom:1px solid var(--rule); }
+  footer a:hover{ color:var(--pine); }
+
+  @media (max-width:520px){
+    .subject-head{ grid-template-columns:auto 1fr auto; gap:0.7rem; padding:1.1rem; }
+    .catalog{ font-size:0.72rem; }
+    .subject-title{ font-size:1.22rem; }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{ transition:none !important; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+
+    <nav class="nav">
+      <a href="/">← Home</a>
+      <a href="/about">About Me</a>
+      <a href="/tools">Tools</a>
+      <a href="/thoughts">Thoughts</a>
+    </nav>
+
+    <header class="mast">
+      <div class="eyebrow">A running log · Logan Schauer</div>
+      <h1>What Is Logan <em>Learning</em></h1>
+      <p class="lede">Things I'm working through, in the order I mean to work through them. Kept for me first — a way to stay honest about the gap between buying the book and finishing it.</p>
+
+      <div class="tally">
+        <span class="count" id="overallCount">0 / 0</span>
+        <span class="label">lessons done</span>
+      </div>
+      <div class="meter"><span id="overallBar"></span></div>
+    </header>
+
+    <main class="subjects" id="subjects"></main>
+
+    <footer>
+      <a href="/">loganschauer.com</a>
+      <span id="stamp"></span>
+    </footer>
+
+  </div>
+
+<script>
+/* ============================================================================
+   EDIT YOUR CURRICULUM HERE — flip done: false → true as you finish lessons
+   ========================================================================== */
+const SUBJECTS = [
+  {
+    id: "sociology",
+    title: "Sociology",
+    why: "The lens I keep reaching for without the vocabulary to name it.",
+    lessons: [
+      { text: "The sociological imagination — Mills, private trouble vs. public issue", done: false },
+      { text: "Durkheim: social facts, solidarity, and anomie", done: false },
+      { text: "Marx: class, labor, and alienation", done: false },
+      { text: "Weber: bureaucracy, authority, and the Protestant ethic", done: false },
+      { text: "Symbolic interactionism — Goffman and the performance of self", done: false },
+      { text: "Structure vs. agency — the debate that runs through all of it", done: false },
+      { text: "Bourdieu: capital, habitus, and taste", done: false },
+      { text: "Applying the lens: read one current event three different ways", done: false }
+    ]
+  },
+  {
+    id: "writing",
+    title: "Writing",
+    why: "I want to write the way I talk when it's real — not looser, not stiffer.",
+    lessons: [
+      { text: "Write the bad draft on purpose — finish one, don't fix it yet", done: false },
+      { text: "Find the one-sentence point after the draft, not before", done: false },
+      { text: "Edit pass 1 — cut: delete anything not serving the point", done: false },
+      { text: "Edit pass 2 — order: does each paragraph earn the next?", done: false },
+      { text: "Edit pass 3 — voice: read aloud, plain down the 'writing'", done: false },
+      { text: "Write to one person, named or unnamed, every time", done: false },
+      { text: "Ship one piece publicly and survive it", done: false }
+    ]
+  },
+  {
+    id: "specialty-coffee",
+    title: "Specialty Coffee",
+    why: "Fourth-wave knowledge I have by feel — worth making explicit.",
+    lessons: [
+      { text: "Origin & terroir — why the same varietal tastes like the place", done: false },
+      { text: "Processing: washed, natural, honey, and what each does to the cup", done: false },
+      { text: "Roast development and the Maillard vs. caramelization line", done: false },
+      { text: "Extraction theory — the brewing control chart", done: false },
+      { text: "Dialing in espresso: dose, yield, time, and taste", done: false },
+      { text: "Cupping protocol and building a tasting vocabulary", done: false }
+    ]
+  }
+];
+
+/* Update this when you edit the list above — it's the footer stamp. */
+const LAST_UPDATED = "jul 2026";
+
+/* ============================================================================
+   ENGINE — you shouldn't need to touch anything below this line.
+   Read-only: progress is baked into the data above, so visitors see your
+   real progress and can't check anything off.
+   ========================================================================== */
+const CHECK_SVG = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 6.2l2.3 2.3L9.6 3.5" stroke="#F6F1E6" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const CHEV_SVG  = '<svg class="chev" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+function pad(n){ return String(n).padStart(2,"0"); }
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+}
+
+function render(){
+  const root = document.getElementById("subjects");
+  let grandDone = 0, grandTotal = 0;
+
+  SUBJECTS.forEach((sub, i) => {
+    const done = sub.lessons.filter(l => l.done).length;
+    const total = sub.lessons.length;
+    grandDone += done; grandTotal += total;
+    const pct = total ? Math.round((done/total)*100) : 0;
+    const complete = total > 0 && done === total;
+
+    const card = document.createElement("section");
+    card.className = "subject" + (complete ? " done" : "");
+    card.dataset.id = sub.id;
+
+    // ----- header (click to expand) -----
+    const head = document.createElement("div");
+    head.className = "subject-head";
+    head.setAttribute("role","button");
+    head.setAttribute("tabindex","0");
+    head.setAttribute("aria-expanded","false");
+    head.innerHTML = `
+      <div class="catalog">No.${pad(i+1)}</div>
+      <div class="subject-body">
+        <div class="subject-title">${escapeHtml(sub.title)}</div>
+        ${sub.why ? `<div class="subject-why">${escapeHtml(sub.why)}</div>` : ""}
+        <div class="subject-meta">
+          <div class="mini-meter"><span style="width:${pct}%"></span></div>
+          <div class="frac">${done}/${total}${complete ? " · done" : ""}</div>
+        </div>
+      </div>
+      ${CHEV_SVG}
+    `;
+
+    // ----- lessons (read-only) -----
+    const lessonsWrap = document.createElement("div");
+    lessonsWrap.className = "lessons";
+    const inner = document.createElement("div");
+    inner.className = "lessons-inner";
+    const ul = document.createElement("ul");
+    ul.className = "lesson-list";
+
+    sub.lessons.forEach((lesson, j) => {
+      const li = document.createElement("li");
+      li.className = "lesson" + (lesson.done ? " checked" : "");
+      li.innerHTML = `
+        <span class="box">${CHECK_SVG}</span>
+        <span class="lesson-idx">${pad(j+1)}</span>
+        <span class="lesson-text">${escapeHtml(lesson.text)}${lesson.done ? '<span class="sr-only"> (done)</span>' : ""}</span>
+      `;
+      ul.appendChild(li);
+    });
+
+    inner.appendChild(ul);
+    lessonsWrap.appendChild(inner);
+
+    const expand = () => {
+      const isOpen = card.classList.toggle("open");
+      head.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    };
+    head.addEventListener("click", expand);
+    head.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter" || e.key === " "){ e.preventDefault(); expand(); }
+    });
+
+    card.appendChild(head);
+    card.appendChild(lessonsWrap);
+    root.appendChild(card);
+  });
+
+  // overall
+  const overallPct = grandTotal ? Math.round((grandDone/grandTotal)*100) : 0;
+  document.getElementById("overallCount").textContent = grandDone + " / " + grandTotal;
+  requestAnimationFrame(()=>{ document.getElementById("overallBar").style.width = overallPct + "%"; });
+}
+
+document.getElementById("stamp").textContent = "updated " + LAST_UPDATED;
+
+render();
+</script>
+</body>
+</html>
